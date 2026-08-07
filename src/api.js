@@ -40,26 +40,31 @@ export const dateStr = (date) => {
 export async function fetchMatches(date = new Date()) {
   const d = dateStr(date);
   const url = `${BASE}/${API_KEY}/eventsday.php?d=${d}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`API 오류: ${res.status}`);
-  const data = await res.json();
-  const events = data.events || [];
+
+  // TheSportsDB + 로컬 크롤(KBO/NPB) 병합
+  const [tsdb, local] = await Promise.all([
+    fetch(url).then(r => r.ok ? r.json() : { events: [] }).catch(() => ({ events: [] })),
+    fetch('/local_games.json').then(r => r.ok ? r.json() : []).catch(() => []),
+  ]);
+
+  const events = [...(tsdb.events || []), ...(Array.isArray(local) ? local : [])];
 
   // 축구/야구 리그만 필터 (전체 보고 싶으면 isTargetLeague 체크 제거)
-  const filtered = events.filter((e) => isTargetLeague(e.strLeague, e.strSport));
+  const filtered = events.filter((e) => isTargetLeague(e.strLeague, e.strSport) || e.source === 'local');
 
   return filtered.map((e) => ({
-    id: e.idEvent,
-    league: e.strLeague,
-    sport: e.strSport,
-    homeTeam: e.strHomeTeam || '홈',
-    awayTeam: e.strAwayTeam || '어웨이',
-    event: e.strEvent,
-    time: e.strTime,
-    date: e.dateEvent,
-    homeBadge: e.strHomeTeamBadge,
-    awayBadge: e.strAwayTeamBadge,
-    venue: e.strVenue,
-    thumb: e.strThumb,
+    id: e.idEvent || e.id || `${e.league}-${e.homeTeam}-${e.awayTeam}-${e.date}`,
+    league: e.strLeague || e.league,
+    sport: e.strSport || e.sport || 'Baseball',
+    homeTeam: e.strHomeTeam || e.homeTeam || '홈',
+    awayTeam: e.strAwayTeam || e.awayTeam || '어웨이',
+    event: e.strEvent || e.event || `${e.homeTeam} vs ${e.awayTeam}`,
+    time: e.strTime || e.time || '',
+    date: e.dateEvent || e.date,
+    homeBadge: e.strHomeTeamBadge || e.homeBadge,
+    awayBadge: e.strAwayTeamBadge || e.awayBadge,
+    venue: e.strVenue || e.venue,
+    thumb: e.strThumb || e.thumb,
+    source: e.source || 'tsdb',
   }));
 }

@@ -3,3 +3,5 @@ dist
 *.local
 .DS_Store
 .vercel
+scripts/cache/
+public/seed_elo.json

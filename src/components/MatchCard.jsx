@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getGroqKey, hasGroqKey, explainPrediction } from '../ai';
+import { hasGroqKey, explainPrediction, extractPick } from '../ai';
 
 const PICKS = [
   { key: 'home', label: '홈 승' },
@@ -11,6 +11,13 @@ const RESULTS = [
   { key: 'lose', label: '❌ 패' },
   { key: 'push', label: '➖ 무효' },
 ];
+
+// 배당(소수) -> implied probability (역확률)
+function impliedProb(odds) {
+  const o = Number(odds);
+  if (!o || o <= 1) return 0;
+  return 1 / o;
+}
 
 export default function MatchCard({ match, record, eloPred, open, onToggle, onSave }) {
   const [pick, setPick] = useState(record?.pick || 'home');
@@ -33,12 +40,25 @@ export default function MatchCard({ match, record, eloPred, open, onToggle, onSa
     try {
       const text = await explainPrediction(match, eloPred);
       setAiText(text);
+      const pk = extractPick(text, match.homeTeam, match.awayTeam);
+      if (pk) setPick(pk); // AI 추천을 픽에 반영
     } catch (e) {
       setAiError(e.message);
     } finally {
       setAiLoading(false);
     }
   };
+
+  // 예측 확률 막대
+  const homePct = eloPred?.homeWin ?? 50;
+  const drawPct = eloPred?.draw ?? 0;
+  const awayPct = eloPred?.awayWin ?? 50;
+  const favored = eloPred?.favored;
+
+  // 배당 가치 배지 (예측 승률 > 배당 역확률 → 가치 있음)
+  const imp = impliedProb(odds);
+  const valuePick = imp > 0 && favored ? (favored === 'home' ? homePct / 100 : favored === 'away' ? awayPct / 100 : drawPct / 100) : 0;
+  const hasValue = imp > 0 && valuePick > imp + 0.05;
 
   return (
     <div className={`bg-white rounded-xl shadow-sm border-2 ${savedColor} p-3`}>
@@ -57,18 +77,23 @@ export default function MatchCard({ match, record, eloPred, open, onToggle, onSa
         )}
       </button>
 
-      {/* ELO 승률 배너 */}
+      {/* 예측 확률 막대그래프 */}
       {eloPred && (
-        <div className="mt-2 flex items-center gap-2 text-xs">
-          <div className="flex-1 bg-gray-100 rounded-lg p-2 text-center">
-            <div className="font-bold text-emerald-700">{eloPred.homeWin}%</div>
-            <div className="text-[10px] text-gray-500">{match.homeTeam}</div>
+        <div className="mt-3 space-y-1.5">
+          <ProbBar label={match.homeTeam} pct={homePct} color="emerald" highlight={favored === 'home'} />
+          {drawPct > 0 && <ProbBar label="무승부" pct={drawPct} color="gray" highlight={favored === 'draw'} />}
+          <ProbBar label={match.awayTeam} pct={awayPct} color="blue" highlight={favored === 'away'} />
+          <div className="text-[10px] text-gray-400 text-right">
+            ELO {eloPred.homeRating} vs {eloPred.awayRating}
+            {eloPred.homeRating !== 1500 || eloPred.awayRating !== 1500 ? ' · 시즌 시드 반영' : ' · 기본값'}
           </div>
-          <div className="text-gray-400 text-[10px]">ELO</div>
-          <div className="flex-1 bg-gray-100 rounded-lg p-2 text-center">
-            <div className="font-bold text-blue-700">{eloPred.awayWin}%</div>
-            <div className="text-[10px] text-gray-500">{match.awayTeam}</div>
-          </div>
+        </div>
+      )}
+
+      {/* 배당 가치 배지 */}
+      {hasValue && (
+        <div className="mt-2 text-[11px] bg-amber-100 text-amber-800 rounded-lg px-2 py-1 font-medium">
+          💡 가치 배당: 예측 승률 {(valuePick * 100).toFixed(0)}% &gt; 배당 역확률 {(imp * 100).toFixed(0)}%
         </div>
       )}
 
@@ -78,14 +103,13 @@ export default function MatchCard({ match, record, eloPred, open, onToggle, onSa
           <div>
             <button onClick={runAi} disabled={aiLoading}
               className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm font-medium disabled:opacity-50">
-              {aiLoading ? 'AI 분석 중...' : '🤖 AI 분석'}
+              {aiLoading ? 'AI 분석 중...' : '🤖 AI 분석 (승부 근거)'}
             </button>
             {aiError && <div className="mt-1 text-xs text-red-500">{aiError}</div>}
             {aiText && <div className="mt-2 text-xs text-gray-700 bg-purple-50 rounded-lg p-2 leading-relaxed">{aiText}</div>}
           </div>
-
           <div>
-            <div className="text-xs font-bold text-gray-600 mb-1">예측</div>
+            <div className="text-xs font-bold text-gray-600 mb-1">예측 픽</div>
             <div className="flex gap-2">
               {PICKS.map((p) => (
                 <button key={p.key} onClick={() => setPick(p.key)}
@@ -124,6 +148,21 @@ export default function MatchCard({ match, record, eloPred, open, onToggle, onSa
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function ProbBar({ label, pct, color, highlight }) {
+  const bg = color === 'emerald' ? 'bg-emerald-500' : color === 'blue' ? 'bg-blue-500' : 'bg-gray-400';
+  const txt = color === 'emerald' ? 'text-emerald-700' : color === 'blue' ? 'text-blue-700' : 'text-gray-600';
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-20 text-[11px] text-gray-500 truncate">{label}</div>
+      <div className="flex-1 bg-gray-100 rounded-full h-5 relative overflow-hidden">
+        <div className={`${bg} h-5 rounded-full transition-all`} style={{ width: `${Math.max(pct, 3)}%` }} />
+        <span className={`absolute inset-0 flex items-center justify-end pr-2 text-[10px] font-bold ${txt}`}>{pct}%</span>
+      </div>
+      {highlight && <span className="text-[10px] text-amber-500">★</span>}
     </div>
   );
 }

@@ -43,7 +43,7 @@ export default function App() {
     if (data.result && data.result !== 'push') {
       const winner = data.result === 'win' ? data.pick : (data.pick === 'home' ? 'away' : 'home');
       const actual = data.result === 'win' ? data.pick : winner;
-      const eloNext = updateElo(elo, data.homeTeam, data.awayTeam, actual);
+      const eloNext = updateElo(elo, data.homeTeam, data.awayTeam, actual, data.sport);
       setElo(eloNext);
       saveElo(eloNext);
     }
@@ -112,10 +112,10 @@ export default function App() {
               key={m.id}
               match={m}
               record={getRecord(records, m.id)}
-              eloPred={predict(m.homeTeam, m.awayTeam, elo)}
+              eloPred={predict(m.homeTeam, m.awayTeam, elo, m.sport)}
               open={openId === m.id}
               onToggle={() => setOpenId(openId === m.id ? null : m.id)}
-              onSave={(data) => handleSave(m.id, { ...data, league: m.league, homeTeam: m.homeTeam, awayTeam: m.awayTeam, event: m.event })}
+              onSave={(data) => handleSave(m.id, { ...data, league: m.league, sport: m.sport || 'Baseball', homeTeam: m.homeTeam, awayTeam: m.awayTeam, event: m.event })}
             />
           ))}
         </div>

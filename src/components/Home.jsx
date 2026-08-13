@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { fetchMatches } from '../api';
 import { loadElo, predict } from '../elo';
 import MatchCard from './MatchCard';
 
 export default function Home({ stats }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const today = new Date();
-  const [selDate, setSelDate] = useState(today);
+  const initial = searchParams.get('date');
+  const initialDate = initial ? new Date(initial + 'T00:00:00') : today;
+  const [selDate, setSelDate] = useState(initialDate);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -78,9 +81,22 @@ export default function Home({ stats }) {
       {error && <p className="text-red-500 text-sm py-10 text-center">오류: {error}</p>}
       {!loading && !error && matches.length === 0 && (
         <div className="py-16 text-center">
-          <div className="text-4xl mb-2">📭</div>
-          <p className="text-gray-500 text-sm">해당 날짜에 축구/야구 경기가 없습니다.</p>
-          <p className="text-gray-400 text-xs mt-1">오프시즌이거나 데이터 미제공일 수 있습니다.</p>
+          <div className="text-4xl mb-3">📭</div>
+          {isToday ? (
+            <>
+              <p className="text-gray-600 text-sm font-medium">오늘은 축구/야구 경기가 없어요</p>
+              <p className="text-gray-400 text-xs mt-1.5">오프시즌이거나 데이터 미제공일 수 있습니다.</p>
+              <button onClick={() => setSelDate(new Date(2026, 6, 15))}
+                className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium">
+                최근 경기 있는 날 보기 (7/15)
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="text-gray-500 text-sm">해당 날짜에 축구/야구 경기가 없습니다.</p>
+              <p className="text-gray-400 text-xs mt-1">오프시즌이거나 데이터 미제공일 수 있습니다.</p>
+            </>
+          )}
         </div>
       )}
 

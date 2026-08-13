@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { fetchMatches } from '../api';
 import { loadElo, predict } from '../elo';
-import { getGroqKey, hasGroqKey, explainPrediction, extractPick } from '../ai';
-import { getRecord, upsertRecord, saveRecords } from '../storage';
-import { loadRecords } from '../storage';
+import { hasGroqKey, explainPrediction } from '../ai';
 
-export default function GameDetail({ records }) {
+export default function GameDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();

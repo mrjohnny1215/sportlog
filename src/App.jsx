@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { loadRecords } from './storage';
 import { analyze } from './analytics';
@@ -45,8 +45,8 @@ export default function App() {
       <SettingsModal open={showSettings} onClose={() => setShowSettings(false)} />
 
       <Routes>
-        <Route path="/" element={<Home records={records} stats={stats} />} />
-        <Route path="/game/:id" element={<GameDetail records={records} />} />
+        <Route path="/" element={<Home stats={stats} />} />
+        <Route path="/game/:id" element={<GameDetail />} />
       </Routes>
     </BrowserRouter>
   );

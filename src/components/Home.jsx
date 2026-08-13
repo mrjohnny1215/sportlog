@@ -4,7 +4,7 @@ import { fetchMatches } from '../api';
 import { loadElo, predict } from '../elo';
 import MatchCard from './MatchCard';
 
-export default function Home({ records, stats }) {
+export default function Home({ stats }) {
   const navigate = useNavigate();
   const today = new Date();
   const [selDate, setSelDate] = useState(today);

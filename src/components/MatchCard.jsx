@@ -26,7 +26,7 @@ export default function MatchCard({ match, eloPred, onClick }) {
   );
 }
 
-function TeamRow({ name, pct, star, align }) {
+function TeamRow({ name, pct, star }) {
   return (
     <div className="flex items-center gap-2">
       <span className="text-sm font-semibold text-gray-800 truncate flex-1">{star ? '⭐ ' : ''}{name}</span>

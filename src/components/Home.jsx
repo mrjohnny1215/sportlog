@@ -20,7 +20,14 @@ export default function Home({ stats }) {
     setLoading(true);
     setError(null);
     try {
-      const m = await fetchMatches(date);
+      let m = await fetchMatches(date);
+      // 오늘 날짜인데 경기 없으면 가장 최근 경기 있는 날(7/15)로 폴백
+      const isToday = date.toDateString() === new Date().toDateString();
+      if (isToday && m.length === 0) {
+        const fallback = new Date(2026, 6, 15);
+        m = await fetchMatches(fallback);
+        if (m.length > 0) setSelDate(fallback);
+      }
       setMatches(m);
     } catch (e) {
       setError(e.message);

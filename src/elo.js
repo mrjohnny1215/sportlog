@@ -78,6 +78,24 @@ const ALIASES = {
   'Rakuten Eagles': 'Tohoku Rakuten Golden Eagles',
   'Hokkaido Nippon-Ham Fighters': 'Hokkaido Nippon-Ham Fighters',
   'Chiba Lotte Marines': 'Chiba Lotte Marines',
+
+  // 크롤 표기 (Livesport 한글/약어) -> 표준명
+  '두산': 'Doosan Bears', 'KIA': 'KIA Tigers', 'LG': 'LG Twins', 'SSG': 'SSG Landers',
+  'KT': 'KT Wiz', '삼성': 'Samsung Lions', '롯데': 'Lotte Giants', '키움': 'Kiwoom Heroes',
+  'NC': 'NC Dinos', '한화': 'Hanwha Eagles',
+  '시카고 컵스': 'Chicago Cubs', '시카고 화이트삭스': 'Chicago White Sox', '신시내티': 'Cincinnati Reds',
+  '디트로이트': 'Detroit Tigers', '피츠버그': 'Pittsburgh Pirates', '뉴욕M': 'New York Mets',
+  '클리블랜드': 'Cleveland Guardians', '탬파베이': 'Tampa Bay Rays', '애틀랜타': 'Atlanta Braves',
+  '토론토': 'Toronto Blue Jays', '휴스턴': 'Houston Astros', 'LA 에인절스': 'Los Angeles Angels',
+  '애슬레틱스': 'Athletics', 'LA 다저스': 'Los Angeles Dodgers', '샌프란시스코': 'San Francisco Giants',
+  '미네소타': 'Minnesota Twins', '세인트루이스': 'St. Louis Cardinals', '뉴욕Y': 'New York Yankees',
+  '밀워키': 'Milwaukee Brewers', '캔자스시티': 'Kansas City Royals', '마이애미': 'Miami Marlins',
+  '시애틀': 'Seattle Mariners', '텍사스': 'Texas Rangers', '워싱턴': 'Washington Nationals',
+  '콜로라도': 'Colorado Rockies',
+  '소프트뱅크': 'Fukuoka SoftBank Hawks', '요미우리': 'Yomiuri Giants', '한신': 'Hanshin Tigers',
+  '오릭스': 'Orix Buffaloes', '지바롯데': 'Chiba Lotte Marines', '야쿠르트': 'Tokyo Yakult Swallows',
+  '주니치': 'Chunichi Dragons', '히로시마': 'Hiroshima Toyo Carp', '세이부': 'Saitama Seibu Lions',
+  '라쿠텐': 'Tohoku Rakuten Golden Eagles', '니혼햄': 'Hokkaido Nippon-Ham Fighters',
 };
 
 // 정규화: 소문자/공백/별칭 처리
@@ -93,7 +111,32 @@ export function normalizeTeam(name) {
   return trimmed;
 }
 
+// 팀별 기본 ELO 시드 (2026 시즌 전력 추정, 강팀->약팀 1700~1340)
+const SEED_ELO = {
+  // KBO
+  'LG Twins': 1680, 'SSG Landers': 1660, 'KT Wiz': 1640, 'Doosan Bears': 1620,
+  'Hanwha Eagles': 1580, 'KIA Tigers': 1560, 'NC Dinos': 1540, 'Samsung Lions': 1500,
+  'Lotte Giants': 1460, 'Kiwoom Heroes': 1420,
+  // MLB
+  'Los Angeles Dodgers': 1720, 'New York Yankees': 1700, 'Atlanta Braves': 1690,
+  'Houston Astros': 1680, 'Philadelphia Phillies': 1660, 'Toronto Blue Jays': 1640,
+  'San Diego Padres': 1630, 'Chicago Cubs': 1600, 'Boston Red Sox': 1580,
+  'New York Mets': 1560, 'Seattle Mariners': 1550, 'Cleveland Guardians': 1540,
+  'Tampa Bay Rays': 1520, 'Minnesota Twins': 1500, 'Milwaukee Brewers': 1490,
+  'Cincinnati Reds': 1470, 'Arizona Diamondbacks': 1460, 'St. Louis Cardinals': 1450,
+  'San Francisco Giants': 1440, 'Texas Rangers': 1430, 'Detroit Tigers': 1420,
+  'Los Angeles Angels': 1380, 'Athletics': 1360, 'Miami Marlins': 1360,
+  'Pittsburgh Pirates': 1350, 'Washington Nationals': 1340, 'Kansas City Royals': 1370,
+  'Colorado Rockies': 1380, 'Chicago White Sox': 1400,
+  // NPB
+  'Fukuoka SoftBank Hawks': 1680, 'Yomiuri Giants': 1670, 'Hanshin Tigers': 1650,
+  'Orix Buffaloes': 1630, 'Chiba Lotte Marines': 1600, 'Tokyo Yakult Swallows': 1580,
+  'Chunichi Dragons': 1560, 'Hiroshima Toyo Carp': 1550, 'Saitama Seibu Lions': 1520,
+  'Tohoku Rakuten Golden Eagles': 1500, 'Hokkaido Nippon-Ham Fighters': 1480,
+};
+
 let SEED = {};
+
 // 빌드 시 seed_elo.json을 import 해서 주입
 export function setSeed(seedObj) {
   SEED = seedObj?.teams || {};
@@ -101,7 +144,14 @@ export function setSeed(seedObj) {
 
 export function loadElo() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    const raw = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (!raw || typeof raw !== 'object') return {};
+    // NaN/비정상 값 정리 (이전 버전 찌꺼기 방어)
+    const clean = {};
+    for (const [k, v] of Object.entries(raw)) {
+      if (typeof v === 'number' && !isNaN(v)) clean[k] = v;
+    }
+    return clean;
   } catch {
     return {};
   }
@@ -114,11 +164,10 @@ export function saveElo(elo) {
 // 시드 + 사용자 누적 ELO를 합친 실제 레이팅 반환
 export function getRating(team, elo) {
   const key = normalizeTeam(team);
-  if (elo[key] != null) return elo[key]; // 사용자가 직접 업데이트한 값 우선
-  const seedEntry = SEED[key];
-  if (seedEntry) return seedEntry.rating;
-  // 별칭 매칭 실패 시 시드에서 이름 그대로 찾기
-  if (SEED[team]) return SEED[team].rating;
+  if (elo[key] != null && !isNaN(elo[key])) return elo[key]; // 사용자가 직접 업데이트한 값 우선 (NaN 방어)
+  if (SEED[key] != null) return SEED[key]; // setSeed 주입값
+  if (SEED_ELO[key] != null) return SEED_ELO[key]; // 빌트인 시드
+  if (SEED_ELO[team] != null) return SEED_ELO[team];
   return DEFAULT_RATING;
 }
 
@@ -164,9 +213,17 @@ export function updateElo(elo, home, away, result, sport = 'Baseball') {
 }
 
 // 경기 예측 (시드 기반 실제 전력 반영)
+function _rate(team, elo) {
+  const key = normalizeTeam(team);
+  if (elo && elo[key] != null && !isNaN(elo[key])) return elo[key];
+  if (SEED_ELO[key] != null) return SEED_ELO[key];
+  if (SEED_ELO[team] != null) return SEED_ELO[team];
+  return DEFAULT_RATING;
+}
+
 export function predict(home, away, elo, sport = 'Baseball') {
-  const rH = getRating(home, elo);
-  const rA = getRating(away, elo);
+  const rH = _rate(home, elo);
+  const rA = _rate(away, elo);
   const p = winProbability(rH, rA, sport);
   const r = (x) => Math.round(x * 1000) / 10;
   return {

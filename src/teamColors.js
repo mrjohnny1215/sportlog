@@ -40,8 +40,8 @@ export function teamColor(name = '') {
   for (const key of Object.keys(TEAM_COLORS)) {
     if (n.includes(key)) return TEAM_COLORS[key][0];
   }
-  // 해시 기반 생성 (일관성 유지)
+  // 해시 기반 생성 (일관성 유지) — 채도 높은 진한 톤
   let h = 0;
   for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 360;
-  return `hsl(${h}, 65%, 45%)`;
+  return `hsl(${h}, 75%, 42%)`;
 }

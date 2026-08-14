@@ -49,10 +49,19 @@ export default function Home({ stats }) {
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-4">
-      {/* 히어로 */}
-      <section className="mb-5">
-        <h1 className="text-2xl font-black text-gray-900">{isToday ? '오늘의 경기' : `${ds} 경기`}</h1>
-        <p className="text-sm text-gray-500 mt-1">승무패 예측 · ELO 모델 기반 분석</p>
+      {/* 히어로 (스포츠풍 다크 그라데이션) */}
+      <section className="relative mb-5 rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 px-5 py-6 shadow-xl">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl" />
+        <div className="relative">
+          <div className="flex items-center gap-1.5 text-emerald-400 text-[11px] font-bold tracking-widest uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Prediction
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white mt-1.5">
+            {isToday ? '오늘의 경기' : `${ds} 경기`}
+          </h1>
+          <p className="text-sm text-slate-300 mt-1">승무패 예측 · ELO 모델 기반 분석</p>
+        </div>
       </section>
 
       {/* 날짜 네비 */}
@@ -107,7 +116,7 @@ export default function Home({ stats }) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {matches.map((m) => (
           <MatchCard
             key={m.id}

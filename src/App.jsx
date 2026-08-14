@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { loadRecords } from './storage';
 import { analyze } from './analytics';
-import { getGroqKey, setGroqKey, hasGroqKey } from './ai';
+import { getGroqKey, setGroqKey } from './ai';
 import Home from './components/Home';
 import GameDetail from './components/GameDetail';
 
@@ -12,7 +12,7 @@ function SettingsModal({ open, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40" onClick={onClose}>
       <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl p-4 space-y-3" onClick={e => e.stopPropagation()}>
-        <div className="text-base font-bold text-gray-800">⚙ AI 설정</div>
+        <div className="text-base font-bold text-gray-800">⚙ 설정</div>
         <div className="text-xs text-gray-500">Groq API 키 (무료) — 브라우저에만 저장됩니다. groq.com에서 발급.</div>
         <input type="password" value={key} onChange={e => setKey(e.target.value)}
           placeholder="gsk_..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
@@ -36,8 +36,8 @@ export default function App() {
             <span>⚾</span><span>SportLog</span>
           </a>
           <button onClick={() => setShowSettings(s => !s)}
-            className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg text-gray-700">
-            ⚙ {hasGroqKey() ? 'AI 설정됨' : 'AI 키 입력'}
+            className="text-xs bg-gray-900 hover:bg-black px-3 py-1.5 rounded-lg text-white font-medium transition">
+            ⚙ 설정
           </button>
         </div>
       </header>

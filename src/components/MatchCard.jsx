@@ -1,72 +1,92 @@
 import React from 'react';
 import { teamColor } from '../teamColors';
 
-function colors(name) {
-  const [a] = teamColor(name);
-  return a;
+function Badge({ src, name }) {
+  const [err, setErr] = React.useState(false);
+  if (src && !err) {
+    return (
+      <img src={src} alt={name} className="w-12 h-12 object-contain shrink-0 drop-shadow transition-transform duration-300 group-hover:scale-110"
+        onError={() => setErr(true)} />
+    );
+  }
+  const initial = (name || '?').trim().charAt(0);
+  return (
+    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 text-lg font-black shrink-0">
+      {initial}
+    </div>
+  );
 }
 
 export default function MatchCard({ match, eloPred, onClick }) {
   const homePct = eloPred?.homeWin ?? 50;
   const awayPct = eloPred?.awayWin ?? 50;
-  const leagueShort = (match.league || '').replace(/\s*(Baseball|Soccer|League)$/i, '').slice(0, 16);
-  const homeC = colors(match.homeTeam);
-  const awayC = colors(match.awayTeam);
   const favored = eloPred?.favored;
+  const leagueShort = (match.league || '').replace(/\s*(Baseball|Soccer|League)$/i, '').slice(0, 18);
+  const homeC = teamColor(match.homeTeam);
+  const awayC = teamColor(match.awayTeam);
 
   return (
-    <button onClick={onClick} className="text-left bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl hover:border-gray-200 hover:-translate-y-0.5 transition-all w-full overflow-hidden">
-      {/* 리그/시간 */}
-      <div className="flex items-center justify-between px-4 pt-3 pb-2">
-        <span className="text-[11px] font-semibold text-gray-500">{leagueShort}</span>
-        <span className="text-[11px] text-gray-400 font-medium">{match.time ? match.time.slice(0, 5) : '시간 미정'}</span>
+    <button onClick={onClick}
+      className="group relative w-full text-left bg-white rounded-3xl border border-gray-100 shadow-[0_2px_8px_rgba(15,23,42,0.06)] hover:shadow-[0_12px_32px_rgba(15,23,42,0.14)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+      {/* 상단 팀컬러 스트라이프 */}
+      <div className="h-1.5 flex">
+        <div className="flex-1" style={{ background: homeC }} />
+        <div className="flex-1" style={{ background: awayC }} />
       </div>
 
-      {/* 대결 구도 */}
-      <div className="px-4">
-        {/* 홈 */}
-        <Side name={match.homeTeam} badge={match.homeBadge} pct={homePct} color={homeC} star={favored === 'home'} tag="홈" />
-        {/* VS */}
-        <div className="flex items-center gap-2 my-1.5">
-          <div className="flex-1 h-px bg-gray-100" />
-          <span className="text-[10px] font-black text-gray-300">VS</span>
-          <div className="flex-1 h-px bg-gray-100" />
+      <div className="p-4">
+        {/* 리그 + 시간 */}
+        <div className="flex items-center justify-between mb-3.5">
+          <span className="text-[11px] font-bold text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full truncate max-w-[60%]">{leagueShort}</span>
+          <span className="text-[11px] font-semibold text-gray-400">{match.time ? match.time.slice(0, 5) : '시간 미정'}</span>
         </div>
-        {/* 원정 */}
-        <Side name={match.awayTeam} badge={match.awayBadge} pct={awayPct} color={awayC} star={favored === 'away'} tag="원정" />
-      </div>
 
-      <div className="mt-3 px-4 py-2.5 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-        <span className="text-[10px] text-gray-400">ELO {eloPred?.homeRating} : {eloPred?.awayRating}</span>
-        <span className="text-[12px] text-emerald-600 font-bold">분석 보기 →</span>
-      </div>
-    </button>
-  );
-}
+        {/* 대진 */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2.5 min-w-0">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full blur-md opacity-30" style={{ background: homeC }} />
+              <Badge src={match.homeBadge} name={match.homeTeam} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className={`text-[15px] font-extrabold truncate ${favored === 'home' ? 'text-gray-900' : 'text-gray-500'}`} title={match.homeTeam}>
+                {favored === 'home' && '⭐ '}{match.homeTeam}
+              </div>
+              <div className="mt-0.5 inline-block text-[9px] font-black tracking-wider text-white px-1.5 py-0.5 rounded bg-gray-800">HOME</div>
+            </div>
+          </div>
 
-function Side({ name, badge, pct, color, star, tag }) {
-  return (
-    <div>
-      <div className="flex items-center gap-2.5">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden shrink-0 border-2" style={{ borderColor: color, background: '#f8fafc' }}>
-          {badge ? (
-            <img src={badge} alt={name} className="w-7 h-7 object-contain" loading="lazy" onError={e => { e.target.style.display = 'none'; }} />
-          ) : (
-            <span className="text-base">{star ? '⭐' : '🔵'}</span>
-          )}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1">
-            <span className="text-[9px] font-bold text-gray-400 bg-gray-100 px-1 rounded">{tag}</span>
-            <span className={`text-[13px] font-bold truncate ${star ? 'text-gray-900' : 'text-gray-600'}`}>{star ? '⭐ ' : ''}{name}</span>
+          <div className="shrink-0 w-7 h-7 rounded-full bg-gray-900 text-white text-[10px] font-black flex items-center justify-center shadow">VS</div>
+
+          <div className="flex-1 flex items-center gap-2.5 min-w-0 flex-row-reverse">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full blur-md opacity-30" style={{ background: awayC }} />
+              <Badge src={match.awayBadge} name={match.awayTeam} />
+            </div>
+            <div className="min-w-0 flex-1 text-right">
+              <div className={`text-[15px] font-extrabold truncate ${favored === 'away' ? 'text-gray-900' : 'text-gray-500'}`} title={match.awayTeam}>
+                {favored === 'away' && '⭐ '}{match.awayTeam}
+              </div>
+              <div className="mt-0.5 inline-block text-[9px] font-black tracking-wider text-white px-1.5 py-0.5 rounded bg-gray-400">AWAY</div>
+            </div>
           </div>
         </div>
-        <span className="text-[15px] font-black shrink-0" style={{ color }}>{pct}%</span>
+
+        {/* 승률 바 (홈/원정 그라데이션 + 애니메이션) */}
+        <div className="mt-4 flex items-center gap-2.5">
+          <span className="text-[14px] font-black w-12 text-right tabular-nums" style={{ color: homeC }}>{homePct}%</span>
+          <div className="flex-1 h-3 bg-gray-100 rounded-full overflow-hidden flex">
+            <div className="h-full rounded-l-full transition-all duration-500" style={{ width: `${homePct}%`, background: `linear-gradient(90deg, ${homeC}, ${homeC}aa)` }} />
+            <div className="h-full rounded-r-full transition-all duration-500" style={{ width: `${awayPct}%`, background: `linear-gradient(90deg, ${awayC}aa, ${awayC})` }} />
+          </div>
+          <span className="text-[14px] font-black w-12 tabular-nums" style={{ color: awayC }}>{awayPct}%</span>
+        </div>
+
+        <div className="mt-3.5 pt-3 border-t border-gray-50 flex justify-between items-center">
+          <span className="text-[10px] font-semibold text-gray-400" title="팀 전력 지수 (ELO 레이팅)">ELO {eloPred?.homeRating} : {eloPred?.awayRating}</span>
+          <span className="text-[12px] font-bold text-emerald-600 group-hover:translate-x-0.5 transition-transform">분석 보기 →</span>
+        </div>
       </div>
-      {/* 승률 막대 (팀 컬러, 굵게) */}
-      <div className="mt-1.5 h-2.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className="h-2.5 rounded-full" style={{ width: `${Math.max(pct, 4)}%`, background: color }} />
-      </div>
-    </div>
+    </button>
   );
 }

@@ -32,7 +32,7 @@ export default function GameDetail() {
 
   const runAi = async () => {
     if (!match || !eloPred) return;
-    if (!hasGroqKey()) { setAiError('AI 키를 먼저 입력하세요 (우상단 ⚙).'); return; }
+    if (!hasGroqKey()) { setAiError('AI 키를 먼저 입력하세요 (우상단 ⚙ 설정).'); return; }
     setAiLoading(true); setAiError(null);
     try {
       const text = await explainPrediction(match, eloPred);
@@ -46,7 +46,7 @@ export default function GameDetail() {
     return (
       <main className="max-w-2xl mx-auto px-4 py-10 text-center">
         <p className="text-gray-500 text-sm">경기를 찾을 수 없습니다.</p>
-        <button onClick={() => navigate('/')} className="mt-3 text-emerald-600 text-sm">← 목록으로</button>
+        <button onClick={() => navigate('/')} className="mt-3 text-emerald-600 text-sm font-semibold">← 목록으로</button>
       </main>
     );
   }
@@ -55,61 +55,63 @@ export default function GameDetail() {
   const awayPct = eloPred?.awayWin ?? 50;
   const drawPct = eloPred?.draw ?? 0;
   const isSoccer = (match.sport || '') === 'Soccer';
-  const homeGrad = teamColor(match.homeTeam);
-  const awayGrad = teamColor(match.awayTeam);
+  const homeC = teamColor(match.homeTeam);
+  const awayC = teamColor(match.awayTeam);
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-4">
-      <button onClick={() => navigate('/')} className="text-sm text-gray-500 mb-4">← 목록</button>
+      <button onClick={() => navigate('/')} className="text-sm text-gray-500 mb-4 font-medium hover:text-gray-800">← 목록</button>
 
       {/* 대진표 헤더 (팀 컬러 대칭) */}
-      <section className="rounded-3xl overflow-hidden shadow-lg">
+      <section className="rounded-3xl overflow-hidden shadow-xl">
         <div className="flex">
-          <div className="flex-1 p-5 text-white" style={{ background: homeGrad }}>
-            <div className="w-14 h-14 mx-auto rounded-2xl bg-white/25 border border-white/40 flex items-center justify-center overflow-hidden backdrop-blur">
-              {match.homeBadge ? <img src={match.homeBadge} alt={match.homeTeam} className="w-11 h-11 object-contain" onError={e => { e.target.style.display = 'none'; }} /> : <span className="text-xl">{eloPred?.favored === 'home' ? '⭐' : '🔵'}</span>}
+          <div className="flex-1 p-6 text-white" style={{ background: `linear-gradient(160deg, ${homeC}, ${homeC}cc)` }}>
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-white/25 border border-white/40 flex items-center justify-center overflow-hidden backdrop-blur">
+              {match.homeBadge ? <img src={match.homeBadge} alt={match.homeTeam} className="w-13 h-13 object-contain" onError={e => { e.target.style.display = 'none'; }} /> : <span className="text-2xl">{eloPred?.favored === 'home' ? '⭐' : '🔵'}</span>}
             </div>
-            <div className="mt-2 text-center text-sm font-bold leading-tight">{eloPred?.favored === 'home' ? '⭐ ' : ''}{match.homeTeam}</div>
-            <div className="text-center text-3xl font-black mt-1">{homePct}%</div>
+            <div className="mt-2.5 text-center text-[15px] font-extrabold leading-tight drop-shadow">{eloPred?.favored === 'home' ? '⭐ ' : ''}{match.homeTeam}</div>
+            <div className="text-center text-4xl font-black mt-1 drop-shadow-lg">{homePct}%</div>
+            <div className="text-center text-[10px] font-medium text-white/80 mt-0.5">승리 확률</div>
           </div>
-          <div className="w-14 flex items-center justify-center bg-white shrink-0">
+          <div className="w-16 flex items-center justify-center bg-white shrink-0">
             <span className="text-xs font-black text-gray-400">VS</span>
           </div>
-          <div className="flex-1 p-5 text-white text-right" style={{ background: awayGrad }}>
-            <div className="w-14 h-14 ml-auto rounded-2xl bg-white/25 border border-white/40 flex items-center justify-center overflow-hidden backdrop-blur">
-              {match.awayBadge ? <img src={match.awayBadge} alt={match.awayTeam} className="w-11 h-11 object-contain" onError={e => { e.target.style.display = 'none'; }} /> : <span className="text-xl">{eloPred?.favored === 'away' ? '⭐' : '🔵'}</span>}
+          <div className="flex-1 p-6 text-white text-right" style={{ background: `linear-gradient(160deg, ${awayC}, ${awayC}cc)` }}>
+            <div className="w-16 h-16 ml-auto rounded-2xl bg-white/25 border border-white/40 flex items-center justify-center overflow-hidden backdrop-blur">
+              {match.awayBadge ? <img src={match.awayBadge} alt={match.awayTeam} className="w-13 h-13 object-contain" onError={e => { e.target.style.display = 'none'; }} /> : <span className="text-2xl">{eloPred?.favored === 'away' ? '⭐' : '🔵'}</span>}
             </div>
-            <div className="mt-2 text-center text-sm font-bold leading-tight">{eloPred?.favored === 'away' ? '⭐ ' : ''}{match.awayTeam}</div>
-            <div className="text-center text-3xl font-black mt-1">{awayPct}%</div>
+            <div className="mt-2.5 text-center text-[15px] font-extrabold leading-tight drop-shadow">{eloPred?.favored === 'away' ? '⭐ ' : ''}{match.awayTeam}</div>
+            <div className="text-center text-4xl font-black mt-1 drop-shadow-lg">{awayPct}%</div>
+            <div className="text-center text-[10px] font-medium text-white/80 mt-0.5">승리 확률</div>
           </div>
         </div>
-        <div className="bg-white px-5 py-3 text-xs text-gray-400 text-center">
+        <div className="bg-white px-5 py-3 text-xs text-gray-400 text-center font-semibold">
           {match.league} · {match.time ? match.time.slice(0, 5) : '시간 미정'}
         </div>
       </section>
 
       {/* 3-way 승률 바 */}
-      <section className="mt-4 bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-        <div className="text-xs font-bold text-gray-500 mb-3">승률 분포 (ELO 모델)</div>
-        <WinBar label={`${match.homeTeam} 승`} pct={homePct} color={homeGrad} />
-        {isSoccer && <WinBar label="무승부" pct={drawPct} color="linear-teamColor(135deg,#9ca3af,#d1d5db)" />}
-        <WinBar label={`${match.awayTeam} 승`} pct={awayPct} color={awayGrad} />
+      <section className="mt-4 bg-white rounded-2xl border border-gray-100 p-5 shadow-md">
+        <div className="text-xs font-extrabold text-gray-700 mb-3">승률 분포 (ELO 모델)</div>
+        <WinBar label={`${match.homeTeam} 승`} pct={homePct} color={homeC} />
+        {isSoccer && <WinBar label="무승부" pct={drawPct} color="#9ca3af" />}
+        <WinBar label={`${match.awayTeam} 승`} pct={awayPct} color={awayC} />
       </section>
 
       {/* AI 분석 */}
-      <section className="mt-4 bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+      <section className="mt-4 bg-white rounded-2xl border border-gray-100 p-4 shadow-md">
         <button onClick={runAi} disabled={aiLoading}
-          className="w-full bg-purple-600 text-white py-3 rounded-xl text-sm font-semibold disabled:opacity-50 hover:bg-purple-700 transition">
+          className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3.5 rounded-xl text-sm font-extrabold disabled:opacity-50 hover:shadow-lg hover:from-purple-700 hover:to-indigo-700 transition-all">
           {aiLoading ? 'AI 분석 중...' : '🤖 AI 승부 분석'}
         </button>
-        {aiError && <div className="mt-2 text-xs text-red-500">{aiError}</div>}
+        {aiError && <div className="mt-2 text-xs text-red-500 font-medium">{aiError}</div>}
         {aiText && <div className="mt-3 text-sm text-gray-700 bg-purple-50 rounded-xl p-4 leading-relaxed whitespace-pre-wrap">{aiText}</div>}
       </section>
 
       {/* 양팀 정보 */}
       <section className="mt-4 grid grid-cols-2 gap-3">
-        <TeamInfoCard name={match.homeTeam} badge={match.homeBadge} rating={eloPred?.homeRating} pct={homePct} grad={homeGrad} />
-        <TeamInfoCard name={match.awayTeam} badge={match.awayBadge} rating={eloPred?.awayRating} pct={awayPct} grad={awayGrad} />
+        <TeamInfoCard name={match.homeTeam} badge={match.homeBadge} rating={eloPred?.homeRating} pct={homePct} color={homeC} />
+        <TeamInfoCard name={match.awayTeam} badge={match.awayBadge} rating={eloPred?.awayRating} pct={awayPct} color={awayC} />
       </section>
 
       <section className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4">
@@ -129,37 +131,35 @@ export default function GameDetail() {
 }
 
 function WinBar({ label, pct, color }) {
-  const [c] = (color.match(/hsl\([^)]+\)|#[0-9a-fA-F]{6}/g) || ['#10b981']);
   return (
-    <div className="mb-2.5 last:mb-0">
-      <div className="flex justify-between text-[11px] text-gray-500 mb-1">
-        <span className="truncate max-w-[70%]">{label}</span>
-        <span className="font-bold" style={{ color: c }}>{pct}%</span>
+    <div className="mb-3 last:mb-0">
+      <div className="flex justify-between text-[12px] text-gray-600 mb-1.5">
+        <span className="truncate max-w-[70%] font-semibold">{label}</span>
+        <span className="font-black tabular-nums" style={{ color }}>{pct}%</span>
       </div>
-      <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
-        <div className="h-2.5 rounded-full" style={{ width: `${Math.max(pct, 3)}%`, background: c }} />
+      <div className="h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+        <div className="h-3 rounded-full transition-all duration-300" style={{ width: `${Math.max(pct, 3)}%`, background: `linear-gradient(90deg, ${color}, ${color}cc)` }} />
       </div>
     </div>
   );
 }
 
-function TeamInfoCard({ name, badge, rating, pct, grad }) {
-  const [c] = (grad.match(/hsl\([^)]+\)|#[0-9a-fA-F]{6}/g) || ['#10b981']);
+function TeamInfoCard({ name, badge, rating, pct, color }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-      <div className="flex items-center gap-2">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden shrink-0" style={{ background: grad }}>
-          {badge ? <img src={badge} alt={name} className="w-7 h-7 object-contain" onError={e => { e.target.style.display = 'none'; }} /> : <span className="text-sm">🔵</span>}
+    <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-md">
+      <div className="flex items-center gap-2.5">
+        <div className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden shrink-0 border-2 shadow-sm" style={{ borderColor: color, background: '#fff' }}>
+          {badge ? <img src={badge} alt={name} className="w-8 h-8 object-contain" onError={e => { e.target.style.display = 'none'; }} /> : <span className="text-sm">🔵</span>}
         </div>
-        <div className="text-sm font-bold text-gray-800 truncate">{name}</div>
+        <div className="text-[14px] font-extrabold text-gray-800 truncate">{name}</div>
       </div>
       <div className="mt-3 flex justify-between text-xs">
-        <span className="text-gray-400">ELO</span>
-        <span className="font-bold text-gray-700">{rating}</span>
+        <span className="text-gray-400 font-semibold">ELO</span>
+        <span className="font-black text-gray-800">{rating}</span>
       </div>
       <div className="flex justify-between text-xs">
-        <span className="text-gray-400">승리 확률</span>
-        <span className="font-bold" style={{ color: c }}>{pct}%</span>
+        <span className="text-gray-400 font-semibold">승리 확률</span>
+        <span className="font-black" style={{ color }}>{pct}%</span>
       </div>
     </div>
   );

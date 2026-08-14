@@ -12,4 +12,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': types[path.extname(fp)] || 'application/octet-stream' });
     res.end(data);
   });
-}).listen(8098, () => console.log('SPA on 8098'));
+}).listen(8101, () => console.log('SPA on 8101'));

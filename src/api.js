@@ -2,9 +2,6 @@
 const API_KEY = '3';
 const BASE = 'https://www.thesportsdb.com/api/v1/json';
 
-// 표시에서 제외할 개인 종목 (팀 스포츠는 모두 표시)
-const NOISE_SPORTS = ['tennis', 'golf', 'cycling', 'motorsport', 'bowls', 'chess'];
-
 
 // 오늘 날짜 (YYYY-MM-DD, 로컬 기준)
 export const todayStr = () => {
@@ -34,14 +31,14 @@ export async function fetchMatches(date = new Date()) {
 
   const events = [...(tsdb.events || []), ...(Array.isArray(local) ? local : [])];
 
-  // 모든 스포츠 경기 표시 (사용자 요청: "모든 게임" 보기). 노이즈 최소화만.
+  // 야구만 표시 (사용자 지시: NFL 등 다른 스포츠 제외, KBO/NPB/MLB/CPBL 야구만)
   const filtered = events.filter((e) => {
-    if (e.source === 'local') return true;
-    if (!e.strLeague && !e.strSport) return false;
-    // 개인 종목(테니스/골프 등)은 제외, 팀 스포츠 위주
+    if (e.source === 'local') return true; // local_games.json = 이미 야구만
     const sp = (e.strSport || '').toLowerCase();
-    if (NOISE_SPORTS.includes(sp)) return false;
-    return true;
+    const lg = (e.strLeague || '').toLowerCase();
+    if (sp === 'baseball') return true;
+    if (lg.includes('kbo') || lg.includes('npb') || lg.includes('mlb') || lg.includes('cpbl')) return true;
+    return false;
   });
 
   return filtered.map((e) => ({

@@ -1,1 +1,218 @@
-[]
+[
+  {
+    "league": "KBO",
+    "homeTeam": "KIA",
+    "awayTeam": "두산",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "KBO",
+    "homeTeam": "KT",
+    "awayTeam": "키움",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "KBO",
+    "homeTeam": "LG",
+    "awayTeam": "SSG",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "KBO",
+    "homeTeam": "롯데",
+    "awayTeam": "NC",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "KBO",
+    "homeTeam": "삼성",
+    "awayTeam": "한화",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "시카고 컵스",
+    "awayTeam": "세인트루이스",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "신시내티",
+    "awayTeam": "마이애미",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "디트로이트",
+    "awayTeam": "시카고 화이트삭스",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "피츠버그",
+    "awayTeam": "보스턴",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "뉴욕M",
+    "awayTeam": "워싱턴",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "클리블랜드",
+    "awayTeam": "샌디에이고",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "탬파베이",
+    "awayTeam": "볼티모어",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "애틀랜타",
+    "awayTeam": "애리조나",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "토론토",
+    "awayTeam": "뉴욕Y",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "휴스턴",
+    "awayTeam": "시애틀",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "LA 에인절스",
+    "awayTeam": "캔자스시티",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "애슬레틱스",
+    "awayTeam": "텍사스",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "LA 다저스",
+    "awayTeam": "밀워키",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "샌프란시스코",
+    "awayTeam": "콜로라도",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "미네소타",
+    "awayTeam": "필라델피아",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "MLB",
+    "homeTeam": "신시내티",
+    "awayTeam": "세인트루이스",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "NPB",
+    "homeTeam": "세이부",
+    "awayTeam": "지바롯데",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "NPB",
+    "homeTeam": "소프트뱅크",
+    "awayTeam": "라쿠텐",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "NPB",
+    "homeTeam": "야쿠르트",
+    "awayTeam": "요코하마",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "NPB",
+    "homeTeam": "오릭스",
+    "awayTeam": "니혼햄",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "NPB",
+    "homeTeam": "주니치",
+    "awayTeam": "요미우리",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  },
+  {
+    "league": "NPB",
+    "homeTeam": "히로시마",
+    "awayTeam": "한신",
+    "source": "local",
+    "date": "2026-08-14",
+    "sport": "Baseball"
+  }
+]

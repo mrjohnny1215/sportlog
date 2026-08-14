@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { fetchMatches } from '../api';
+import { fetchMatches, fetchH2H } from '../api';
 import { loadElo, predict } from '../elo';
 import { hasGroqKey, explainPrediction } from '../ai';
 import { teamColor } from '../teamColors';
@@ -15,6 +15,8 @@ export default function GameDetail() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState(null);
 
+  const [h2h, setH2h] = useState(null);
+
   const elo = useState(() => loadElo())[0];
 
   useEffect(() => {
@@ -25,7 +27,11 @@ export default function GameDetail() {
       const m = all.find(x => x.id === decodeURIComponent(id)) || null;
       if (cancelled) return;
       setMatch(m);
-      if (m) setEloPred(predict(m.homeTeam, m.awayTeam, elo, m.sport));
+      if (m) {
+        setEloPred(predict(m.homeTeam, m.awayTeam, elo, m.sport));
+        const h = await fetchH2H(m.homeTeam, m.awayTeam, m.league);
+        if (!cancelled) setH2h(h);
+      }
     })();
     return () => { cancelled = true; };
   }, [id, elo, location.state]);
@@ -113,6 +119,33 @@ export default function GameDetail() {
         <TeamInfoCard name={match.homeTeam} badge={match.homeBadge} rating={eloPred?.homeRating} pct={homePct} color={homeC} />
         <TeamInfoCard name={match.awayTeam} badge={match.awayBadge} rating={eloPred?.awayRating} pct={awayPct} color={awayC} />
       </section>
+
+      {/* 최근 맞대결 (H2H) */}
+      {h2h && h2h.count > 0 && (
+        <section className="mt-4 bg-white rounded-2xl border border-gray-100 p-4 shadow-md">
+          <div className="text-xs font-extrabold text-gray-700 mb-3">최근 맞대결 (H2H) · {h2h.count}경기</div>
+          <div className="space-y-2">
+            {h2h.h2h.map((g, i) => {
+              const homeWin = g.homeScore > g.awayScore;
+              const awayWin = g.awayScore > g.homeScore;
+              const homeIsFav = g.home === match.homeTeam;
+              return (
+                <div key={i} className="flex items-center justify-between text-[12px] bg-gray-50 rounded-xl px-3 py-2">
+                  <span className="w-16 text-gray-400">{g.date || '최근'}</span>
+                  <div className="flex-1 flex items-center justify-center gap-2 font-semibold">
+                    <span className={homeIsFav ? (homeWin ? 'text-emerald-600' : 'text-gray-700') : (awayWin ? 'text-gray-400' : 'text-gray-700')}>{g.home}</span>
+                    <span className="tabular-nums font-black text-gray-800">{g.homeScore} : {g.awayScore}</span>
+                    <span className={!homeIsFav ? (homeWin ? 'text-gray-400' : 'text-gray-700') : (awayWin ? 'text-emerald-600' : 'text-gray-700')}>{g.away}</span>
+                  </div>
+                  <span className="w-12 text-right text-[10px] font-bold text-gray-400">
+                    {homeWin ? '홈승' : awayWin ? '원정승' : '무'}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4">
         <div className="text-sm font-bold text-amber-800 mb-1">ℹ️ 선수 정보 안내</div>

@@ -1,0 +1,265 @@
+{
+  "KIA|두산|KBO": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "KIA",
+        "away": "두산",
+        "homeScore": 4,
+        "awayScore": 10
+      }
+    ]
+  },
+  "KT|키움|KBO": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "KT",
+        "away": "키움",
+        "homeScore": 8,
+        "awayScore": 3
+      }
+    ]
+  },
+  "LG|SSG|KBO": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "LG",
+        "away": "SSG",
+        "homeScore": 3,
+        "awayScore": 5
+      }
+    ]
+  },
+  "롯데|NC|KBO": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "롯데",
+        "away": "NC",
+        "homeScore": 8,
+        "awayScore": 9
+      }
+    ]
+  },
+  "삼성|한화|KBO": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "삼성",
+        "away": "한화",
+        "homeScore": 8,
+        "awayScore": 5
+      }
+    ]
+  },
+  "시카고 컵스|세인트루이스|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "신시내티|마이애미|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "디트로이트|시카고 화이트삭스|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "피츠버그|보스턴|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "뉴욕M|워싱턴|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "클리블랜드|샌디에이고|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "탬파베이|볼티모어|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "애틀랜타|애리조나|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "토론토|뉴욕Y|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "휴스턴|시애틀|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "LA 에인절스|캔자스시티|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "애슬레틱스|텍사스|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "LA 다저스|밀워키|MLB": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "LA 다저스",
+        "away": "밀워키",
+        "homeScore": 4,
+        "awayScore": 5
+      }
+    ]
+  },
+  "샌프란시스코|콜로라도|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "미네소타|필라델피아|MLB": {
+    "count": 0,
+    "h2h": []
+  },
+  "소프트뱅크|라쿠텐|NPB": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "소프트뱅크",
+        "away": "라쿠텐",
+        "homeScore": 2,
+        "awayScore": 5
+      }
+    ]
+  },
+  "오릭스|니혼햄|NPB": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "오릭스",
+        "away": "니혼햄",
+        "homeScore": 6,
+        "awayScore": 2
+      }
+    ]
+  },
+  "주니치|요미우리|NPB": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "주니치",
+        "away": "요미우리",
+        "homeScore": 0,
+        "awayScore": 1
+      }
+    ]
+  },
+  "세이부|지바롯데|NPB": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "세이부",
+        "away": "지바롯데",
+        "homeScore": 7,
+        "awayScore": 0
+      }
+    ]
+  },
+  "야쿠르트|요코하마|NPB": {
+    "count": 0,
+    "h2h": []
+  },
+  "히로시마|한신|NPB": {
+    "count": 1,
+    "h2h": [
+      {
+        "date": "",
+        "home": "히로시마",
+        "away": "한신",
+        "homeScore": 6,
+        "awayScore": 1
+      }
+    ]
+  },
+  "퉁이 라이온스|푸방 가디언스|CPBL": {
+    "count": 2,
+    "h2h": [
+      {
+        "date": "07.08. 10:35",
+        "home": "푸방 가디언스",
+        "away": "퉁이 라이온스",
+        "homeScore": 0,
+        "awayScore": 4
+      },
+      {
+        "date": "",
+        "home": "퉁이 라이온스",
+        "away": "푸방 가디언스",
+        "homeScore": 3,
+        "awayScore": 7
+      }
+    ]
+  },
+  "웨이취엔 드래곤스|라쿠텐 몽키스|CPBL": {
+    "count": 2,
+    "h2h": [
+      {
+        "date": "07.08. 10:35",
+        "home": "라쿠텐 몽키스",
+        "away": "웨이취엔 드래곤스",
+        "homeScore": 3,
+        "awayScore": 1
+      },
+      {
+        "date": "",
+        "home": "웨이취엔 드래곤스",
+        "away": "라쿠텐 몽키스",
+        "homeScore": 2,
+        "awayScore": 1
+      }
+    ]
+  },
+  "중신 브라더스|TSG 호크스|CPBL": {
+    "count": 4,
+    "h2h": [
+      {
+        "date": "09.08. 08:05",
+        "home": "TSG 호크스",
+        "away": "중신 브라더스",
+        "homeScore": 2,
+        "awayScore": 10
+      },
+      {
+        "date": "08.08. 08:05",
+        "home": "TSG 호크스",
+        "away": "중신 브라더스",
+        "homeScore": 1,
+        "awayScore": 6
+      },
+      {
+        "date": "07.08. 10:35",
+        "home": "TSG 호크스",
+        "away": "중신 브라더스",
+        "homeScore": 2,
+        "awayScore": 5
+      },
+      {
+        "date": "",
+        "home": "중신 브라더스",
+        "away": "TSG 호크스",
+        "homeScore": 7,
+        "awayScore": 0
+      }
+    ]
+  }
+}

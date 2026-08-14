@@ -57,3 +57,17 @@ export async function fetchMatches(date = new Date()) {
     source: e.source || 'tsdb',
   }));
 }
+
+
+// 최근 맞대결(H2H) — 빌드 시점에 크롤된 public/h2h_data.json 사용
+export async function fetchH2H(homeTeam, awayTeam, league) {
+  try {
+    const res = await fetch('/h2h_data.json');
+    if (!res.ok) return { count: 0, h2h: [] };
+    const data = await res.json();
+    const key = `${homeTeam}|${awayTeam}|${league}`;
+    return data[key] || { count: 0, h2h: [] };
+  } catch {
+    return { count: 0, h2h: [] };
+  }
+}

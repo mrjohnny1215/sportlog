@@ -14,7 +14,14 @@ const LEAGUES = [
   const page = await browser.newPage();
   const games = [];
   const seen = new Set();
-  const today = new Date().toISOString().slice(0, 10);
+  // 한국 시간(KST = UTC+9) 기준 — 오늘 + 내일 양쪽 크롤 (경기 일정이 자정 넘어 배치됨)
+  const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const kstToday = fmt.format(new Date());
+  const kstTomorrow = fmt.format(new Date(Date.now() + 24 * 60 * 60 * 1000));
+  const [ty, tm, td] = kstToday.split('-');
+  const [py, pm, pd] = kstTomorrow.split('-');
+  const todayMDs = [`${td}.${tm}.`, `${pd}.${pm}.`]; // 오늘/내일 MM.DD.
+  const today = kstToday;
 
   for (const lg of LEAGUES) {
     try {
@@ -22,19 +29,30 @@ const LEAGUES = [
       await page.waitForTimeout(5000);
       const lines = await page.evaluate(() => document.body.innerText.split('\n').map(l => l.trim()).filter(Boolean));
       for (let i = 0; i < lines.length; i++) {
-        if (lines[i].startsWith('투수:')) {
-          // 구조: [날짜] [홈] [원정] [-] [-] [투수:]
-          const home = lines[i - 4];
-          const away = lines[i - 3];
-          const isTeam = (s) => s && s.length < 30
-            && !/순위|즐겨찾기|리그|TV|배당률|LIVE|예정|종료|투수|아카이브|:$|본문|로그인|스코어|축구|야구|농구|하키|배구|테니스|탁구|AD|요약|결과|경기일정|순위/.test(s)
-            && !/^\d+$/.test(s) && s !== '-' && s !== '';
-          if (isTeam(home) && isTeam(away) && home !== away) {
-            const key = lg.code + home + away;
-            if (!seen.has(key)) {
-              seen.add(key);
-              games.push({ league: lg.code, homeTeam: home, awayTeam: away, source: 'local', date: today });
-            }
+        // 구조: [날짜.시간] [홈팀] [원정팀] [-] [-] [날짜.시간]
+        // 예: "15.08. 10:00" "KIA" "두산" "-" "-" "15.08. 10:00"
+        const home = lines[i];
+        const away = lines[i + 1];
+        const dash1 = lines[i + 2];
+        const dash2 = lines[i + 3];
+        const isTeam = (s) => s && s.length < 30 && s.length > 1
+          && !/순위|즐겨찾기|리그|TV|배당률|LIVE|예정|종료|투수|아카이브|본문|로그인|스코어|경기일정|결과|더 많은|고정된/.test(s)
+          && !/^\d{1,2}\.\d{2}/.test(s) && s !== '-' && s !== '';
+        if (isTeam(home) && isTeam(away) && dash1 === '-' && dash2 === '-') {
+          // 시간 추출: 위 1줄(홈팀 앞) 또는 아래 1줄(원정팀 뒤) 확인
+          let timeStr = '';
+          const before = lines[i - 1] || '';
+          const after = lines[i + 4] || '';
+          const tMatch = (before.match(/\d{1,2}\.\d{2}\.\s*(\d{1,2}:\d{2})/) || after.match(/\d{1,2}\.\d{2}\.\s*(\d{1,2}:\d{2})/) || before.match(/(\d{1,2}:\d{2})/) || after.match(/(\d{1,2}:\d{2})/));
+          if (tMatch) timeStr = tMatch[1];
+          // 날짜 필터: 홈팀 위/아래 줄에 오늘 날짜(MM.DD.)가 포함된 경기만
+          const dateLine = before + ' ' + after;
+          const hasToday = todayMDs.some(md => dateLine.includes(md));
+          if (!hasToday) continue;
+          const key = lg.code + home + away;
+          if (!seen.has(key)) {
+            seen.add(key);
+            games.push({ league: lg.code, homeTeam: home, awayTeam: away, source: 'local', date: today, time: timeStr });
           }
         }
       }

@@ -147,15 +147,6 @@ export default function GameDetail() {
         </section>
       )}
 
-      <section className="mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4">
-        <div className="text-sm font-bold text-amber-800 mb-1">ℹ️ 선수 정보 안내</div>
-        <p className="text-xs text-amber-700 leading-relaxed">
-          무료 데이터 소스(TheSportsDB)는 경기별 라인업·로스터를 제공하지 않습니다.
-          상세 선수 명단은 유료 API 또는 크롤러 연동 시 제공 가능합니다.
-          현재는 팀 전력(ELO 승률)과 AI 분석만 제공됩니다.
-        </p>
-      </section>
-
       <p className="mt-6 text-center text-[11px] text-gray-400">
         예측은 데이터 기반 참고용이며, 실제 결과는 달라질 수 있습니다.
       </p>

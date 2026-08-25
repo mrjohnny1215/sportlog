@@ -5,6 +5,7 @@ import ScoreboardHeader from "@/components/ScoreboardHeader";
 import ScoreboardMatchCard from "@/components/ScoreboardMatchCard";
 import ParlayCard from "@/components/ParlayCard";
 import HitRateDashboard from "@/components/HitRateDashboard";
+import UpcomingSection from "@/components/UpcomingSection";
 import { api } from "@/lib/api";
 import type { Game, Sport } from "@/types/sports";
 
@@ -57,6 +58,10 @@ export default function Home() {
             ))}
           </div>
         )}
+      </section>
+
+      <section className="mt-10">
+        <UpcomingSection days={7} />
       </section>
 
       <section className="mt-8">

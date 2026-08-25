@@ -28,6 +28,12 @@ export const api = {
   prediction: (gameId: string) =>
     get<PredictionDetail>(`/predictions/${gameId}`),
   parlay: () => get<Parlay>(`/parlay/today`),
+  upcoming: (params?: { days?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.days) q.set("days", String(params.days));
+    const qs = q.toString();
+    return get<{ count: number; days: number; games: Game[] }>(`/upcoming${qs ? `?${qs}` : ""}`);
+  },
   hitrate: (params?: { period?: string; sport?: string; league?: string }) => {
     const q = new URLSearchParams();
     if (params?.period) q.set("period", params.period);

@@ -5,3 +5,8 @@ build/
 .env
 .env*.local
 *.log
+backend/.venv/
+backend/.env
+backend/sportlog.db
+frontend/.next/
+frontend/node_modules/

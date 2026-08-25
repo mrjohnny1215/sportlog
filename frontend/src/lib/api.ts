@@ -6,10 +6,10 @@ import type {
   PredictionDetail,
 } from "@/types/sports";
 
-const API = process.env.NEXT_PUBLIC_API_BASE || "";
+const API = process.env.NEXT_PUBLIC_API_BASE || "https://sportlog-backend-production.up.railway.app";
 
 async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${API}/api${path}`, { cache: "no-store" });
+  const res = await fetch(`${API}${path}`, { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`API ${path} failed: ${res.status}`);
   }
@@ -23,26 +23,20 @@ export const api = {
     if (params?.sport) q.set("sport", params.sport);
     if (params?.league) q.set("league", params.league);
     const qs = q.toString();
-    return get<{ count: number; games: Game[] }>(`/games${qs ? `?${qs}` : ""}`);
+    return get<{ count: number; games: Game[] }>(`/api/games${qs ? `?${qs}` : ""}`);
   },
   prediction: (gameId: string) =>
-    get<PredictionDetail>(`/predictions/${gameId}`),
-  parlay: () => get<Parlay>(`/parlay/today`),
-  upcoming: (params?: { days?: number }) => {
-    const q = new URLSearchParams();
-    if (params?.days) q.set("days", String(params.days));
-    const qs = q.toString();
-    return get<{ count: number; days: number; games: Game[] }>(`/upcoming${qs ? `?${qs}` : ""}`);
-  },
+    get<PredictionDetail>(`/api/predictions/${gameId}`),
+  parlay: () => get<Parlay>(`/api/parlay/today`),
   hitrate: (params?: { period?: string; sport?: string; league?: string }) => {
     const q = new URLSearchParams();
     if (params?.period) q.set("period", params.period);
     if (params?.sport) q.set("sport", params.sport);
     if (params?.league) q.set("league", params.league);
     const qs = q.toString();
-    return get<HitRate>(`/hitrate${qs ? `?${qs}` : ""}`);
+    return get<HitRate>(`/api/hitrate${qs ? `?${qs}` : ""}`);
   },
-  votes: (gameId: string) => get<Votes>(`/votes/${gameId}`),
+  votes: (gameId: string) => get<Votes>(`/api/votes/${gameId}`),
   vote: async (gameId: string, pick: string, ip?: string) => {
     const res = await fetch(`${API}/api/vote`, {
       method: "POST",

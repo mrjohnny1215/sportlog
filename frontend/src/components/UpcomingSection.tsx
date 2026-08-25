@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ScoreboardMatchCard from "@/components/ScoreboardMatchCard";
 import type { Game } from "@/types/sports";
 
-const API = process.env.NEXT_PUBLIC_API_BASE || "";
+const API = process.env.NEXT_PUBLIC_API_BASE || "https://sportlog-backend-production.up.railway.app";
 
 function fmtDate(iso: string | null) {
   if (!iso) return "";
@@ -57,11 +57,6 @@ export default function UpcomingSection({ days = 7 }: { days?: number }) {
       )}
 
       <div className="grid grid-cols-1 gap-3">
-        {items.map((g) => (
-          <div key={g.id} className="text-[11px] text-[#8b98a9] mb-1">
-            {fmtDate(g.game_datetime)}
-          </div>
-        ))}
         {items.map((g) => (
           <ScoreboardMatchCard key={g.id} game={g} />
         ))}

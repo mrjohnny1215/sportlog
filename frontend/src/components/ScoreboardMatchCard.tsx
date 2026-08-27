@@ -46,7 +46,8 @@ export default function ScoreboardMatchCard({ game }: { game: Game }) {
     api.votes(game.id).then(setVotes).catch(() => setVotes(null));
   }, [game.id]);
 
-  async function cast(pick: string) {
+  async function cast(pick: string, e?: React.MouseEvent) {
+    e?.stopPropagation();
     setMyPick(pick);
     await api.vote(game.id, pick).catch(() => {});
     api.votes(game.id).then(setVotes).catch(() => {});
@@ -58,7 +59,8 @@ export default function ScoreboardMatchCard({ game }: { game: Game }) {
   const userAway = votes?.away_pct ?? 0;
 
   return (
-    <article className="bg-board-card border border-board-border rounded-xl p-3 shadow-[0_0_0_1px_rgba(35,41,54,0.6)]">
+    <div className="w-full">
+      <article className="bg-board-card border border-board-border rounded-xl p-3 shadow-[0_0_0_1px_rgba(35,41,54,0.6)]">
       {/* header row */}
       <div className="flex items-center justify-between text-xs text-[#8b98a9] mb-2">
         <div className="flex items-center gap-2">
@@ -171,7 +173,7 @@ export default function ScoreboardMatchCard({ game }: { game: Game }) {
             <button
               key={pk}
               disabled={disabled}
-              onClick={() => cast(pk)}
+              onClick={(e) => cast(pk, e)}
               className={`py-1.5 rounded-md border text-xs font-bold transition ${
                 myPick === pk
                   ? "border-led-gold text-led-gold shadow-glow-gold"

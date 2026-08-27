@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import ScoreboardMatchCard from "@/components/ScoreboardMatchCard";
+import PredictionModal from "@/components/PredictionModal";
 import type { Game } from "@/types/sports";
 
 const API = process.env.NEXT_PUBLIC_API_BASE || "https://sportlog-backend-production.up.railway.app";
@@ -24,6 +25,7 @@ export default function UpcomingSection({ days = 7 }: { days?: number }) {
   const [items, setItems] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -58,9 +60,22 @@ export default function UpcomingSection({ days = 7 }: { days?: number }) {
 
       <div className="grid grid-cols-1 gap-3">
         {items.map((g) => (
-          <ScoreboardMatchCard key={g.id} game={g} />
+          <button
+            key={g.id}
+            onClick={() => setSelectedGameId(g.id)}
+            className="w-full text-left"
+          >
+            <ScoreboardMatchCard game={g} />
+          </button>
         ))}
       </div>
+
+      {selectedGameId && (
+        <PredictionModal
+          gameId={selectedGameId}
+          onClose={() => setSelectedGameId(null)}
+        />
+      )}
     </section>
   );
 }

@@ -39,6 +39,12 @@ export default function ScoreboardHeader({ activeSport, onSelect, sports }: Prop
           {clock}
           <span className="text-[10px] text-[#8b98a9] ml-1">KST</span>
         </div>
+        <a
+          href="/admin"
+          className="text-[11px] px-2 py-1 rounded-md border border-board-border text-[#8b98a9] hover:text-white hover:border-led-gold"
+        >
+          ADMIN
+        </a>
       </div>
       <nav className="max-w-5xl mx-auto px-3 pb-2 flex gap-2 overflow-x-auto">
         {sports.map((s) => {

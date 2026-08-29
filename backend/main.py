@@ -85,8 +85,7 @@ def _ensure_predictions() -> int:
         due = (
             db.query(Game)
             .filter(Game.status == "scheduled")
-            .filter(Game.game_datetime >= now)
-            .filter(Game.game_datetime <= now + timedelta(hours=48))
+            .filter(Game.game_datetime >= now - timedelta(hours=48))
             .all()
         )
         for g in due:

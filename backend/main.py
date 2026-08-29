@@ -410,6 +410,9 @@ def admin_seed():
         n_logs = seed_data.generate_game_logs(db, days=30)
         n_games = seed_data.generate_today_games(db, horizon_days=2)
         return {"teams_ok": True, "logs": n_logs, "games": n_games}
+    except Exception as exc:
+        log.exception("seed failed")
+        raise HTTPException(500, f"seed failed: {exc!r}") from exc
     finally:
         db.close()
 
